@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MR0CK3 AI Bot</title>
 <style>
-html, body {
-  pointer-events: none;
-}
-#bot-toggle, #bot-window {
-  pointer-events: all;
-}
+  /* ── POINTER EVENTS FIX — lets blog clicks pass through iframe ── */
+  html, body {
+    background: transparent;
+    pointer-events: none;
+  }
+  #bot-toggle, #bot-window {
+    pointer-events: auto !important;
+  }
+  .bubble a, .post-card a, .chip, #bot-input, #bot-send {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  /* ────────────────────────────────────────────────────────────── */
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: transparent; font-family: 'Courier New', monospace; }
 
