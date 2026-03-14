@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MR0CK3 AI Bot</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; font-family: 'Courier New', monospace; }
+
+  #bot-toggle {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 60px; height: 60px;
+    background: #000;
+    border: 2px solid #00ff41;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 99999;
+    box-shadow: 0 0 16px #00ff41, 0 0 32px #00ff4160;
+    transition: box-shadow 0.3s;
+    animation: pulse-ring 2s infinite;
+  }
+  #bot-toggle:hover { box-shadow: 0 0 24px #00ff41, 0 0 48px #00ff4190; }
+  #bot-toggle svg { width: 32px; height: 32px; }
+  #bot-toggle .close-icon { display: none; }
+  #bot-toggle.open .bot-icon { display: none; }
+  #bot-toggle.open .close-icon { display: block; }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 #00ff4160, 0 0 16px #00ff41; }
+    70%  { box-shadow: 0 0 0 10px #00ff4100, 0 0 16px #00ff41; }
+    100% { box-shadow: 0 0 0 0 #00ff4100, 0 0 16px #00ff41; }
+  }
+
+  #bot-window {
+    position: fixed;
+    bottom: 96px; right: 24px;
+    width: 340px; max-height: 540px;
+    background: #000;
+    border: 1px solid #00ff41;
+    border-radius: 4px;
+    display: flex; flex-direction: column;
+    z-index: 99998;
+    box-shadow: 0 0 30px #00ff4140, inset 0 0 60px #001a0060;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0; pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+  }
+  #bot-window.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+  #bot-window::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00ff410a 2px, #00ff410a 4px);
+    pointer-events: none; z-index: 1;
+  }
+
+  #bot-header {
+    background: #001a00;
+    border-bottom: 1px solid #00ff41;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative; z-index: 2;
+  }
+  .bot-avatar {
+    width: 36px; height: 36px;
+    border: 1px solid #00ff41; border-radius: 3px;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 8px #00ff4180;
+    flex-shrink: 0;
+  }
+  .bot-name { color: #00ff41; font-size: 13px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 8px #00ff41; }
+  .bot-status { color: #00ff4190; font-size: 10px; letter-spacing: 1px; }
+  .status-dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: #00ff41; border-radius: 50%;
+    margin-right: 4px;
+    animation: blink 1.2s infinite;
+    box-shadow: 0 0 4px #00ff41;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .corner { position: absolute; width: 8px; height: 8px; border-color: #00ff41; border-style: solid; }
+  .corner.tl { top:4px; left:4px; border-width:1px 0 0 1px; }
+  .corner.tr { top:4px; right:4px; border-width:1px 1px 0 0; }
+  .corner.bl { bottom:4px; left:4px; border-width:0 0 1px 1px; }
+  .corner.br { bottom:4px; right:4px; border-width:0 1px 1px 0; }
+
+  #bot-messages {
+    flex: 1; overflow-y: auto;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative; z-index: 2;
+    max-height: 340px;
+  }
+  #bot-messages::-webkit-scrollbar { width: 4px; }
+  #bot-messages::-webkit-scrollbar-track { background: #000; }
+  #bot-messages::-webkit-scrollbar-thumb { background: #00ff41; border-radius: 2px; }
+
+  .msg { display: flex; flex-direction: column; gap: 3px; animation: fadeUp 0.2s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .msg.bot { align-items: flex-start; }
+  .msg.user { align-items: flex-end; }
+
+  .bubble {
+    max-width: 85%; padding: 8px 12px;
+    font-size: 12px; line-height: 1.55;
+    border-radius: 2px; letter-spacing: 0.5px;
+  }
+  .msg.bot .bubble { background:#001a00; border:1px solid #00ff4160; color:#00ff41; border-left:2px solid #00ff41; }
+  .msg.user .bubble { background:#00ff41; color:#000; font-weight:bold; }
+  .bubble a { color:#7fff00; text-decoration:underline; font-weight:bold; }
+
+  .post-list { margin-top: 6px; display: flex; flex-direction: column; gap: 5px; }
+  .post-card {
+    background: #000;
+    border: 1px solid #00ff4140;
+    border-left: 2px solid #00ff41;
+    padding: 5px 8px;
+    border-radius: 2px;
+  }
+  .post-card a { color: #00ff41; text-decoration: none; font-size: 11px; letter-spacing: 0.5px; display:block; }
+  .post-card a:hover { text-decoration: underline; }
+  .post-card .post-desc { color: #00ff4180; font-size: 10px; margin-top: 2px; }
+  .post-tag { font-size: 9px; color: #00ff4160; letter-spacing: 1px; text-transform: uppercase; margin-bottom:2px; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:6px; padding: 0 14px 10px; position:relative; z-index:2; }
+  .chip {
+    background:transparent; border:1px solid #00ff41; color:#00ff41;
+    font-family:'Courier New',monospace; font-size:11px;
+    padding:4px 10px; cursor:pointer; border-radius:2px;
+    letter-spacing:1px; transition:all 0.15s;
+  }
+  .chip:hover { background:#00ff41; color:#000; box-shadow:0 0 8px #00ff41; }
+
+  #bot-input-row { display:flex; border-top:1px solid #00ff4140; position:relative; z-index:2; }
+  #bot-input {
+    flex:1; background:#000; border:none; color:#00ff41;
+    font-family:'Courier New',monospace; font-size:12px;
+    padding:10px 12px; outline:none; letter-spacing:1px;
+  }
+  #bot-input::placeholder { color:#00ff4150; }
+  #bot-send {
+    background:#001a00; border:none; border-left:1px solid #00ff4140;
+    color:#00ff41; padding:10px 14px; cursor:pointer; font-size:14px; transition:background 0.15s;
+  }
+  #bot-send:hover { background:#00ff41; color:#000; }
+
+  .typing-dots { display:flex; gap:4px; padding:4px 0; }
+  .typing-dots span { width:6px; height:6px; background:#00ff41; border-radius:50%; animation:dot-bounce 1s infinite; }
+  .typing-dots span:nth-child(2){animation-delay:.15s}
+  .typing-dots span:nth-child(3){animation-delay:.3s}
+  @keyframes dot-bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-4px);opacity:1} }
+
+  #load-bar {
+    height: 2px; background: #001a00;
+    position: relative; z-index: 2; overflow: hidden;
+  }
+  #load-bar::after {
+    content: '';
+    position: absolute; top:0; left:-100%; width:60%; height: 100%;
+    background: #00ff41;
+    animation: load-slide 1.2s infinite ease-in-out;
+    box-shadow: 0 0 8px #00ff41;
+  }
+  @keyframes load-slide { 0%{left:-60%} 100%{left:110%} }
+  #load-bar.hidden { display: none; }
+
+  @media (max-width:400px) {
+    #bot-window { width:calc(100vw - 32px); right:16px; }
+    #bot-toggle { right:16px; bottom:16px; }
+  }
+</style>
+</head>
+<body>
+
+<button id="bot-toggle" aria-label="Open chat">
+  <!-- Fedora hat icon -->
+  <svg class="bot-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- brim -->
+    <ellipse cx="32" cy="44" rx="28" ry="6" fill="#00ff41" opacity="0.15" stroke="#00ff41" stroke-width="2"/>
+    <!-- crown -->
+    <path d="M18 44 C18 44 16 30 20 22 C23 16 28 13 32 13 C36 13 41 16 44 22 C48 30 46 44 46 44 Z" fill="#001a00" stroke="#00ff41" stroke-width="2" stroke-linejoin="round"/>
+    <!-- indent dent on top -->
+    <path d="M24 20 Q32 15 40 20" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- hat band -->
+    <path d="M19 38 Q32 35 45 38" stroke="#00ff41" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- brim top edge -->
+    <ellipse cx="32" cy="42" rx="22" ry="4" fill="none" stroke="#00ff41" stroke-width="2"/>
+    <!-- glow dot accent -->
+    <circle cx="38" cy="36" r="1.5" fill="#00ff41" opacity="0.7"/>
+  </svg>
+  <svg class="close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 6L6 18M6 6l12 12" stroke="#00ff41" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </svg>
+</button>
+
+<div id="bot-window">
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <div id="bot-header">
+    <div class="bot-avatar">
+      <svg viewBox="0 0 64 64" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="32" cy="44" rx="28" ry="6" fill="#00ff41" opacity="0.15" stroke="#00ff41" stroke-width="2"/>
+        <path d="M18 44 C18 44 16 30 20 22 C23 16 28 13 32 13 C36 13 41 16 44 22 C48 30 46 44 46 44 Z" fill="#001a00" stroke="#00ff41" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M24 20 Q32 15 40 20" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M19 38 Q32 35 45 38" stroke="#00ff41" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="32" cy="42" rx="22" ry="4" fill="none" stroke="#00ff41" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="bot-info">
+      <div class="bot-name">MR0CK3 AI</div>
+      <div class="bot-status"><span class="status-dot"></span><span id="status-text">BOOTING...</span></div>
+    </div>
+  </div>
+
+  <div id="load-bar"></div>
+  <div id="bot-messages"></div>
+  <div class="chips" id="chips-area"></div>
+
+  <div id="bot-input-row">
+    <input id="bot-input" type="text" placeholder="> type your query..." maxlength="120" autocomplete="off"/>
+    <button id="bot-send">⏎</button>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+// After pushing to GitHub, this URL auto-serves your pages.json
+const PAGES_JSON_URL = "https://shamr0ck3.github.io/mr0ck3-bot/pages.json";
+// ────────────────────────────────────────────────────────
+
+let DATA = null;
+
+const toggle   = document.getElementById('bot-toggle');
+const win      = document.getElementById('bot-window');
+const msgs     = document.getElementById('bot-messages');
+const input    = document.getElementById('bot-input');
+const sendBtn  = document.getElementById('bot-send');
+const chipsEl  = document.getElementById('chips-area');
+const loadBar  = document.getElementById('load-bar');
+const statusTx = document.getElementById('status-text');
+let isOpen = false;
+
+// ── Fetch pages.json from GitHub ──
+async function loadData() {
+  try {
+    const res = await fetch(PAGES_JSON_URL + '?t=' + Date.now());
+    DATA = await res.json();
+    loadBar.classList.add('hidden');
+    statusTx.textContent = 'ONLINE // READY';
+  } catch(e) {
+    DATA = {
+      blog: { name:"Chaos Code", url:"https://10kfollowerschallenge.blogspot.com", description:"Free online tools — cybersecurity, AI, privacy, fun generators & web utilities.", github:"https://github.com/shamr0ck3" },
+      pages: [], posts: [], categories: []
+    };
+    loadBar.classList.add('hidden');
+    statusTx.textContent = 'ONLINE // OFFLINE MODE';
+  }
+}
+
+// ── Reply builders (use live DATA) ──
+function replyGreet() {
+  const b = DATA.blog;
+  return {
+    text: `Yo! 🎩 <b>MR0CK3 AI</b> online.\n\nWelcome to <a href="${b.url}" target="_blank">${b.name}</a> —\n${b.description}\n\nWhat do you wanna explore?`,
+    chips: ["🛡️ Security Tools","🤖 AI Tools","🔧 Web Tools","😄 Fun & Games","🤖 About This Bot"]
+  };
+}
+
+function replyBlog() {
+  const b = DATA.blog;
+  const total = (DATA.pages||[]).length + (DATA.posts||[]).length;
+  return {
+    text: `📖 <b>${b.name}</b>\n\n${b.description}\n\n📝 ${total} tools & posts published\n🐙 <a href="${b.github}" target="_blank">GitHub →</a>\n🌐 <a href="${b.url}" target="_blank">Visit Blog →</a>`,
+    chips: ["🛡️ Security Tools","🤖 AI Tools","🔧 Web Tools","😄 Fun & Games"]
+  };
+}
+
+function replyPosts(filterCat) {
+  const all = [...(DATA.pages||[]), ...(DATA.posts||[])];
+  const list = filterCat ? all.filter(p => p.category === filterCat) : all;
+  const cats = DATA.categories || [];
+  const label = filterCat ? (cats.find(c=>c.id===filterCat)?.label || filterCat) : "📚 All Posts";
+
+  if (!list.length) {
+    return {
+      text: `No posts in <b>${label}</b> yet.\nCheck back soon — I post daily! 🔥\n\n👉 <a href="${DATA.blog.url}" target="_blank">Browse Blog →</a>`,
+      chips: ["📚 All Posts","🏠 Home"]
+    };
+  }
+
+  let html = `<b>${label}</b> <span style="color:#00ff4160;font-size:10px">[${list.length} post${list.length>1?'s':''}]</span><div class="post-list">`;
+  list.forEach(p => {
+    html += `<div class="post-card">
+      <div class="post-tag">${p.category}</div>
+      <a href="${p.url}" target="_blank">→ ${p.title}</a>
+      ${p.description ? `<div class="post-desc">${p.description}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+
+  const others = cats.filter(c=>c.id!==filterCat).map(c=>c.label).slice(0,3);
+  return { text: html, chips: [...others, "🏠 Home"] };
+}
+
+function replySkills() {
+  return {
+    text: `🛠️ <b>MR0CK3 Build Stack:</b>\n\n⚡ HTML + CSS + Vanilla JS\n🔒 Cybersecurity & OSINT tools\n🤖 AI-powered web utilities\n🎨 Cyberpunk UI design\n🐚 Bash scripting (Termux)\n🔧 GitHub Pages hosting\n\nEvery tool on <b>Chaos Code</b> is free, runs in-browser, no installs needed.\n\n🐙 <a href="${DATA.blog.github}" target="_blank">github.com/shamr0ck3 →</a>`,
+    chips: ["🛡️ Security Tools","🤖 AI Tools","🔧 Web Tools","😄 Fun & Games"]
+  };
+}
+
+function replyEmbed() {
+  return {
+    text: `📬 <b>GitHub Pages → Blogspot Embed:</b>\n\n1️⃣ Build app → push to GitHub repo\n2️⃣ Settings → Pages → enable GitHub Pages\n3️⃣ Blogger → Theme → Edit HTML\n4️⃣ Paste before <code>&lt;/body&gt;</code>:\n\n<code>&lt;iframe src="https://YOU.github.io/REPO/"&gt;&lt;/iframe&gt;</code>\n\nBypasses ALL Blogger CSP ✅\n\n📖 <a href="${DATA.blog.url}" target="_blank">Full tutorial →</a>`,
+    chips: ["🛠️ Web Dev Skills","🚀 Projects","📚 All Posts"]
+  };
+}
+
+function replyThisBot() {
+  return {
+    text: `🤖 <b>How This Bot Works:</b>\n\n✅ Pure HTML + CSS + JS (zero deps)\n✅ Fetches <code>pages.json</code> live from GitHub\n✅ Scanlines, glow & pulse animation\n✅ Hosted on GitHub Pages\n✅ Embedded via <code>&lt;iframe&gt;</code> in Blogspot\n\n💡 To add new posts: just edit <code>pages.json</code> and push.\n\n📖 <a href="${DATA.blog.url}" target="_blank">Read full tutorial →</a>`,
+    chips: ["📬 How to Embed Widgets","🛠️ Web Dev Skills","📚 All Posts"]
+  };
+}
+
+function replyCollab() {
+  return {
+    text: `💼 <b>Collaborate with MR0CK3?</b>\n\nOpen to:\n• Web tool projects\n• Blogger/GitHub setups\n• Content & growth hacks\n\n📧 <a href="${DATA.blog.url}" target="_blank">Contact via blog →</a>\n🐙 <a href="${DATA.blog.github}" target="_blank">GitHub →</a>`,
+    chips: ["📚 All Posts","🛠️ Web Dev Skills","🏠 Home"]
+  };
+}
+
+// ── Category chip → intent map ──
+const CHIP_INTENT = {
+  "🛡️ Security Tools":     ()=>replyPosts('security'),
+  "🤖 AI Tools":           ()=>replyPosts('ai'),
+  "🔧 Web Tools":          ()=>replyPosts('tool'),
+  "😄 Fun & Games":        ()=>replyPosts('fun'),
+  "📚 All Posts":          ()=>replyPosts(null),
+  "🏠 Home":               ()=>replyGreet(),
+  "🛠️ Web Dev Skills":     ()=>replySkills(),
+  "📬 How to Embed Widgets": ()=>replyEmbed(),
+  "🤖 About This Bot":     ()=>replyThisBot(),
+  "💼 Collaborate":        ()=>replyCollab(),
+  "📖 About the Blog":     ()=>replyBlog(),
+};
+
+// ── NLP intent matcher ──
+function matchIntent(text) {
+  const t = text.toLowerCase();
+  if (["hi","hello","hey","apa","salam","yo","helo","wassup","start"].some(w=>t.includes(w))) return ()=>replyGreet();
+  if (["all post","semua","list","show","latest","recent","new post","terbaru","posts"].some(w=>t.includes(w))) return ()=>replyPosts(null);
+  if (["security","hack","osint","phishing","breach","password","malware","scan","pentest","dork"].some(w=>t.includes(w))) return ()=>replyPosts('security');
+  if (["ai","artificial","image gen","background remov","upscal","text to image"].some(w=>t.includes(w))) return ()=>replyPosts('ai');
+  if (["tool","converter","generator","qr","url","shortener","color","resize","optimizer","metadata","downloader"].some(w=>t.includes(w))) return ()=>replyPosts('tool');
+  if (["fun","game","joke","meme","cat","movie","recipe","fact","premier league"].some(w=>t.includes(w))) return ()=>replyPosts('fun');
+  if (["skill","stack","code","coding","develop","web dev","build","buat"].some(w=>t.includes(w))) return ()=>replySkills();
+  if (["embed","iframe","blogger","blogspot","floating","install","integrate"].some(w=>t.includes(w))) return ()=>replyEmbed();
+  if (["bot","chatbot","how did","how you","buat bot","built this"].some(w=>t.includes(w))) return ()=>replyThisBot();
+  if (["blog","about","chaos","what is","tell me"].some(w=>t.includes(w))) return ()=>replyBlog();
+  if (["contact","hire","collab","work","freelance","kerja"].some(w=>t.includes(w))) return ()=>replyCollab();
+  return null;
+}
+
+// ── Rendering ──
+function addMsg(html, sender) {
+  const div = document.createElement('div');
+  div.className = `msg ${sender}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = sender === 'user'
+    ? String(html).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    : String(html).replace(/\n/g,'<br>');
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing';
+  div.innerHTML = `<div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function removeTyping() { const t=document.getElementById('typing'); if(t)t.remove(); }
+
+function setChips(list) {
+  chipsEl.innerHTML = '';
+  (list||[]).forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      addMsg(label, 'user');
+      chipsEl.innerHTML = '';
+      const fn = CHIP_INTENT[label] || (()=>replyGreet());
+      setTimeout(() => respond(fn), 300);
+    });
+    chipsEl.appendChild(btn);
+  });
+}
+
+function respond(replyFn) {
+  showTyping();
+  setTimeout(() => {
+    removeTyping();
+    const r = replyFn();
+    addMsg(r.text, 'bot');
+    setChips(r.chips);
+  }, 500 + Math.random()*350);
+}
+
+function handleSend() {
+  const val = input.value.trim();
+  if (!val) return;
+  addMsg(val, 'user');
+  input.value = '';
+  chipsEl.innerHTML = '';
+  const fn = matchIntent(val) || (()=>({
+    text:`Hmm, didn't catch that 🤔\n\nTry: "show all posts", "projects", "tutorials", "embed widget"`,
+    chips:["📚 All Posts","🚀 Projects","🛠️ Tutorials","🤖 About This Bot"]
+  }));
+  setTimeout(() => respond(fn), 300);
+}
+
+sendBtn.addEventListener('click', handleSend);
+input.addEventListener('keydown', e => { if(e.key==='Enter') handleSend(); });
+
+toggle.addEventListener('click', async () => {
+  isOpen = !isOpen;
+  win.classList.toggle('open', isOpen);
+  toggle.classList.toggle('open', isOpen);
+  if (isOpen) {
+    if (!DATA) await loadData();
+    if (msgs.children.length === 0) setTimeout(() => respond(replyGreet), 300);
+    input.focus();
+  }
+});
+
+// Preload silently
+loadData();
+</script>
+</body>
+</html>

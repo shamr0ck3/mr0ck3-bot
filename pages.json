@@ -1,0 +1,262 @@
+{
+  "blog": {
+    "name": "Chaos Code",
+    "url": "https://10kfollowerschallenge.blogspot.com",
+    "description": "Free online tools — cybersecurity, AI, privacy, fun generators & web utilities. Built by MR0CK3.",
+    "github": "https://github.com/shamr0ck3"
+  },
+  "posts": [
+    {
+      "title": "Temp Mail",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Disposable temporary email address generator"
+    },
+    {
+      "title": "Text Analyzer",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Analyze and inspect text content online"
+    },
+    {
+      "title": "URL Shortener",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Shorten long URLs instantly for free"
+    },
+    {
+      "title": "Blue Team Scan V1",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Network and security scanning tool for blue teamers"
+    },
+    {
+      "title": "Game 1",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "A fun browser game built with JS"
+    },
+    {
+      "title": "CharCode Translator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Translate characters to char codes and vice versa"
+    },
+    {
+      "title": "HTML to JS Overlay Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Convert HTML into JavaScript overlay code"
+    },
+    {
+      "title": "LinkedIn Google Dork Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Generate Google dork queries for LinkedIn OSINT"
+    },
+    {
+      "title": "Termux WiFi Monitor Script for Network Intrusion Detection",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Bash script for WiFi monitoring and intrusion detection on Termux"
+    },
+    {
+      "title": "Top 4 Face Search & Privacy Tools in 2025",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Best face search and privacy protection tools reviewed"
+    },
+    {
+      "title": "Science Fact Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Random science facts generator"
+    },
+    {
+      "title": "Free Ebook Or PDF Store",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Browse and download free ebooks and PDFs"
+    },
+    {
+      "title": "Cyber Cat Gallery",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "A gallery of cyberpunk cat art"
+    },
+    {
+      "title": "Cyber Joke Terminal",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Terminal-style hacker joke generator"
+    },
+    {
+      "title": "Cyber Cat Facts",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Random cyberpunk cat facts"
+    },
+    {
+      "title": "Cyber Recipe Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Generate creative cyberpunk-themed recipes"
+    },
+    {
+      "title": "Cyber News Feed",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Live cybersecurity news aggregator"
+    },
+    {
+      "title": "Random Meme Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Generate random internet memes"
+    },
+    {
+      "title": "Free Online Email Breach Checker Tool 2025",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Check if your email has been in a data breach"
+    },
+    {
+      "title": "LinkedIn Profile Data Viewer",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "View and analyze LinkedIn profile data"
+    },
+    {
+      "title": "Everyday Something News",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Daily news aggregator tool"
+    },
+    {
+      "title": "Premier League Teams and News",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Latest Premier League football news and team info"
+    },
+    {
+      "title": "QR Code Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Generate QR codes for any URL or text"
+    },
+    {
+      "title": "Image Color Picker",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Pick and extract colors from any image"
+    },
+    {
+      "title": "Backlink Hunter: Find Commentable Websites",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Find websites where you can drop backlinks"
+    },
+    {
+      "title": "Facebook Reel Scraper",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Scrape and download Facebook Reels"
+    },
+    {
+      "title": "Ahref Domain Index Rating",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Check domain authority and index rating"
+    },
+    {
+      "title": "Real-Time Phishing & Malware URL Scanner",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Scan URLs in real-time for phishing and malware threats"
+    },
+    {
+      "title": "Password Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Generate strong secure passwords instantly"
+    },
+    {
+      "title": "Resize Images for Favicons (16x16)",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Convert any image to 16x16 favicon size easily"
+    },
+    {
+      "title": "AI Background Remover",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "ai",
+      "description": "Remove image backgrounds instantly using AI"
+    },
+    {
+      "title": "Free Online Image Optimizer",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Compress and optimize images for the web"
+    },
+    {
+      "title": "Image Metadata Remover",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "security",
+      "description": "Strip EXIF metadata from images for privacy"
+    },
+    {
+      "title": "Pitch Calculator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Calculate pitch and audio frequencies"
+    },
+    {
+      "title": "Video To Dot Transforms",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Transform video into creative dot art style"
+    },
+    {
+      "title": "Image Upscaler with Tile Controlnet",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "ai",
+      "description": "Upscale images using AI tile controlnet method"
+    },
+    {
+      "title": "Text to Image AI Generator",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "ai",
+      "description": "Generate images from text prompts using AI"
+    },
+    {
+      "title": "Video Converter WebM to MP4",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Convert WebM video files to MP4 format online"
+    },
+    {
+      "title": "JPG/PNG to WebP Converter",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Convert images to WebP format for faster web loading"
+    },
+    {
+      "title": "Youtube Thumbnail Download",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "tool",
+      "description": "Download YouTube video thumbnails in full quality"
+    },
+    {
+      "title": "Movie Searching",
+      "url": "https://10kfollowerschallenge.blogspot.com",
+      "category": "fun",
+      "description": "Search and discover movies online"
+    }
+  ],
+  "categories": [
+    { "id": "security", "label": "🛡️ Security Tools" },
+    { "id": "ai",       "label": "🤖 AI Tools"       },
+    { "id": "tool",     "label": "🔧 Web Tools"      },
+    { "id": "fun",      "label": "😄 Fun & Games"    }
+  ]
+}
